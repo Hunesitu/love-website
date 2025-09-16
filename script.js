@@ -1,20 +1,35 @@
-// 立即清理旧版本缓存（在类定义之前执行）
+// 智能数据迁移（保留用户数据，只更新设置）
 (function() {
     const savedData = localStorage.getItem('loveWebsiteData');
     if (savedData) {
         try {
             const parsedData = JSON.parse(savedData);
-            // 如果没有版本号或版本号不是2.0，立即清理
+            // 如果是旧版本，进行数据迁移而不是直接删除
             if (!parsedData.version || parsedData.version !== '2.0') {
-                console.log('立即清理旧版本缓存数据...');
-                localStorage.removeItem('loveWebsiteData');
-                // 同时清理其他可能的相关缓存
-                localStorage.removeItem('lovePassword');
+                console.log('检测到旧版本，正在迁移用户数据...');
+
+                // 保留所有用户创建的内容
+                const migratedData = {
+                    version: '2.0',
+                    diaries: parsedData.diaries || [],
+                    memorials: parsedData.memorials || [],
+                    photos: parsedData.photos || [],
+                    todos: parsedData.todos || [],
+                    messages: parsedData.messages || [],
+                    settings: {
+                        names: { person1: '包胡呢斯图', person2: '张萨出拉' }, // 更新名字
+                        loveStartDate: '2023-09-09' // 更新相恋日期
+                    }
+                };
+
+                // 保存迁移后的数据
+                localStorage.setItem('loveWebsiteData', JSON.stringify(migratedData));
+                console.log('数据迁移完成，用户内容已保留，设置已更新');
             }
         } catch (e) {
-            console.log('缓存数据损坏，正在清理...');
+            console.log('缓存数据损坏，使用默认设置...');
+            // 只有数据损坏时才清理
             localStorage.removeItem('loveWebsiteData');
-            localStorage.removeItem('lovePassword');
         }
     }
 })();
@@ -59,30 +74,23 @@ class LoveWebsite {
         if (savedData) {
             const parsedData = JSON.parse(savedData);
 
-            // 版本检查，如果版本不匹配则清理旧数据
-            if (!parsedData.version || parsedData.version !== this.version) {
-                console.log('检测到旧版本数据，正在清理...');
-                localStorage.removeItem('loveWebsiteData');
-                // 使用默认数据并保存
-                this.saveData();
-                return;
-            }
-
-            // 确保使用新的默认设置，特别是相恋日期
+            // 合并数据，保留用户内容
             this.data = {
                 ...this.data,
                 ...parsedData,
+                version: this.version, // 确保版本号正确
                 settings: {
-                    ...this.data.settings,
-                    ...parsedData.settings
+                    names: { person1: '包胡呢斯图', person2: '张萨出拉' },
+                    loveStartDate: '2023-09-09'
                 }
             };
         }
-        // 强制更新为新的相恋日期和名字（防止旧数据干扰）
+
+        // 确保数据一致性
         this.data.version = this.version;
         this.data.settings.loveStartDate = '2023-09-09';
         this.data.settings.names = { person1: '包胡呢斯图', person2: '张萨出拉' };
-        this.saveData(); // 保存更新后的数据
+        this.saveData();
     }
 
     // 显示主应用
