@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的爱情小屋 💕</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 min-h-screen">
+    <!-- 登录界面 -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-96 max-w-[90%] transform transition-all">
+            <h2 class="text-3xl font-bold text-center text-pink-600 mb-6">
+                <i class="fas fa-heart text-pink-500 mr-2"></i>爱情小屋
+            </h2>
+            <form id="loginForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">密码</label>
+                    <input type="password" id="passwordInput"
+                           class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
+                           placeholder="请输入访问密码">
+                </div>
+                <button type="submit"
+                        class="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white p-3 rounded-lg hover:shadow-lg transition-all">
+                    进入我们的世界
+                </button>
+            </form>
+            <p class="text-sm text-gray-500 text-center mt-4">首次访问请输入：love2024</p>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="mainApp" class="hidden">
+        <!-- 顶部导航 -->
+        <nav class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-40">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-heart text-pink-500 text-2xl"></i>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                            我们的爱情小屋
+                        </h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span id="loveDay" class="text-sm text-gray-600 bg-pink-100 px-3 py-1 rounded-full"></span>
+                        <button id="logoutBtn" class="text-gray-500 hover:text-pink-500 transition-colors">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏导航 -->
+        <div class="flex">
+            <aside class="w-64 bg-white/70 backdrop-blur-md shadow-lg min-h-screen fixed left-0 top-16 z-30">
+                <nav class="p-6">
+                    <ul class="space-y-3">
+                        <li>
+                            <button class="nav-item w-full text-left p-3 rounded-lg transition-all hover:bg-pink-100 flex items-center space-x-3"
+                                    data-section="dashboard">
+                                <i class="fas fa-home text-pink-500"></i>
+                                <span>首页</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-item w-full text-left p-3 rounded-lg transition-all hover:bg-pink-100 flex items-center space-x-3"
+                                    data-section="diary">
+                                <i class="fas fa-book text-purple-500"></i>
+                                <span>爱情日记</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-item w-full text-left p-3 rounded-lg transition-all hover:bg-pink-100 flex items-center space-x-3"
+                                    data-section="memorial">
+                                <i class="fas fa-calendar-heart text-red-500"></i>
+                                <span>纪念日</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-item w-full text-left p-3 rounded-lg transition-all hover:bg-pink-100 flex items-center space-x-3"
+                                    data-section="album">
+                                <i class="fas fa-images text-blue-500"></i>
+                                <span>相册</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-item w-full text-left p-3 rounded-lg transition-all hover:bg-pink-100 flex items-center space-x-3"
+                                    data-section="todo">
+                                <i class="fas fa-tasks text-green-500"></i>
+                                <span>待办清单</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="nav-item w-full text-left p-3 rounded-lg transition-all hover:bg-pink-100 flex items-center space-x-3"
+                                    data-section="message">
+                                <i class="fas fa-comments text-orange-500"></i>
+                                <span>悄悄话</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- 主内容区 -->
+            <main class="flex-1 ml-64 p-6">
+                <!-- 首页 -->
+                <section id="dashboard" class="content-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <!-- 统计卡片 -->
+                        <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-700">相恋天数</h3>
+                                    <p id="totalDays" class="text-3xl font-bold text-pink-500">0</p>
+                                </div>
+                                <i class="fas fa-heart text-4xl text-pink-300"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-700">日记数量</h3>
+                                    <p id="diaryCount" class="text-3xl font-bold text-purple-500">0</p>
+                                </div>
+                                <i class="fas fa-book text-4xl text-purple-300"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-700">照片数量</h3>
+                                    <p id="photoCount" class="text-3xl font-bold text-blue-500">0</p>
+                                </div>
+                                <i class="fas fa-images text-4xl text-blue-300"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最近动态 -->
+                    <div class="bg-white/70 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-clock text-pink-500 mr-2"></i>最近动态
+                        </h2>
+                        <div id="recentActivities" class="space-y-4">
+                            <p class="text-gray-500 text-center py-8">还没有任何动态，快去记录你们的美好时光吧！</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 日记页面 -->
+                <section id="diary" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">爱情日记</h2>
+                        <button id="addDiaryBtn" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                            <i class="fas fa-plus mr-2"></i>写日记
+                        </button>
+                    </div>
+
+                    <!-- 日记列表 -->
+                    <div id="diaryList" class="space-y-6">
+                        <p class="text-gray-500 text-center py-8">还没有日记，开始记录你们的甜蜜时光吧！</p>
+                    </div>
+                </section>
+
+                <!-- 纪念日页面 -->
+                <section id="memorial" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">纪念日</h2>
+                        <button id="addMemorialBtn" class="bg-gradient-to-r from-red-400 to-pink-400 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                            <i class="fas fa-plus mr-2"></i>添加纪念日
+                        </button>
+                    </div>
+
+                    <div id="memorialList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <p class="text-gray-500 text-center py-8 col-span-full">还没有纪念日，快来添加重要的日子吧！</p>
+                    </div>
+                </section>
+
+                <!-- 相册页面 -->
+                <section id="album" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">相册</h2>
+                        <button id="addPhotoBtn" class="bg-gradient-to-r from-blue-400 to-purple-400 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                            <i class="fas fa-plus mr-2"></i>上传照片
+                        </button>
+                    </div>
+
+                    <div id="photoGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <p class="text-gray-500 text-center py-8 col-span-full">还没有照片，快来上传你们的美好回忆吧！</p>
+                    </div>
+                </section>
+
+                <!-- 待办清单页面 -->
+                <section id="todo" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">待办清单</h2>
+                        <button id="addTodoBtn" class="bg-gradient-to-r from-green-400 to-blue-400 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                            <i class="fas fa-plus mr-2"></i>添加待办
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-green-600">未完成</h3>
+                            <div id="todoList" class="space-y-3">
+                                <p class="text-gray-500 text-center py-4">还没有待办事项</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-gray-600">已完成</h3>
+                            <div id="completedList" class="space-y-3">
+                                <p class="text-gray-500 text-center py-4">还没有完成的事项</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 悄悄话页面 -->
+                <section id="message" class="content-section hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-3xl font-bold text-gray-800">悄悄话</h2>
+                        <button id="addMessageBtn" class="bg-gradient-to-r from-orange-400 to-pink-400 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all">
+                            <i class="fas fa-plus mr-2"></i>留言
+                        </button>
+                    </div>
+
+                    <div id="messageList" class="space-y-6">
+                        <p class="text-gray-500 text-center py-8">还没有悄悄话，快来留言吧！</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- 模态框容器 -->
+    <div id="modalContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
