@@ -62,6 +62,8 @@ class LoveWebsite {
         this.isLoggedIn = true;
         this.showApp();
         this.initLoveDate();
+        // 确保当前页面正确渲染
+        this.showSection('dashboard');
     }
 
     // 数据持久化
@@ -125,7 +127,6 @@ class LoveWebsite {
 
     // 事件绑定
     bindEvents() {
-
         // 导航按钮
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
@@ -134,12 +135,21 @@ class LoveWebsite {
             });
         });
 
-        // 各种添加按钮
-        document.getElementById('addDiaryBtn').addEventListener('click', () => this.showDiaryModal());
-        document.getElementById('addMemorialBtn').addEventListener('click', () => this.showMemorialModal());
-        document.getElementById('addPhotoBtn').addEventListener('click', () => this.showPhotoModal());
-        document.getElementById('addTodoBtn').addEventListener('click', () => this.showTodoModal());
-        document.getElementById('addMessageBtn').addEventListener('click', () => this.showMessageModal());
+        // 各种添加按钮 - 添加错误处理
+        const bindButton = (id, handler) => {
+            const button = document.getElementById(id);
+            if (button) {
+                button.addEventListener('click', handler);
+            } else {
+                console.warn(`Button ${id} not found`);
+            }
+        };
+
+        bindButton('addDiaryBtn', () => this.showDiaryModal());
+        bindButton('addMemorialBtn', () => this.showMemorialModal());
+        bindButton('addPhotoBtn', () => this.showPhotoModal());
+        bindButton('addTodoBtn', () => this.showTodoModal());
+        bindButton('addMessageBtn', () => this.showMessageModal());
     }
 
     // 页面切换
@@ -807,6 +817,11 @@ class LoveWebsite {
         const from = document.getElementById('messageFrom').value;
         const content = document.getElementById('messageContent').value;
 
+        if (!content.trim()) {
+            this.showNotification('请输入悄悄话内容', 'error');
+            return;
+        }
+
         const message = {
             id: Date.now(),
             from,
@@ -815,10 +830,12 @@ class LoveWebsite {
         };
 
         this.data.messages.push(message);
-        this.saveAndUpdate();
-        this.renderMessages();
+        this.saveData(); // 直接保存数据
+        this.renderMessages(); // 立即更新显示
         this.closeModal();
         this.showNotification('悄悄话发送成功！', 'success');
+        console.log('Message saved:', message); // 调试日志
+        console.log('Total messages:', this.data.messages.length); // 调试日志
     }
 
     renderMessages() {
