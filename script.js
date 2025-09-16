@@ -1,3 +1,24 @@
+// 立即清理旧版本缓存（在类定义之前执行）
+(function() {
+    const savedData = localStorage.getItem('loveWebsiteData');
+    if (savedData) {
+        try {
+            const parsedData = JSON.parse(savedData);
+            // 如果没有版本号或版本号不是2.0，立即清理
+            if (!parsedData.version || parsedData.version !== '2.0') {
+                console.log('立即清理旧版本缓存数据...');
+                localStorage.removeItem('loveWebsiteData');
+                // 同时清理其他可能的相关缓存
+                localStorage.removeItem('lovePassword');
+            }
+        } catch (e) {
+            console.log('缓存数据损坏，正在清理...');
+            localStorage.removeItem('loveWebsiteData');
+            localStorage.removeItem('lovePassword');
+        }
+    }
+})();
+
 // 情侣网站主要功能实现
 class LoveWebsite {
     constructor() {
