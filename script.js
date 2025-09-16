@@ -21,7 +21,8 @@ class LoveWebsite {
     init() {
         this.loadData();
         this.bindEvents();
-        this.showLogin();
+        this.isLoggedIn = true;
+        this.showApp();
         this.initLoveDate();
     }
 
@@ -37,35 +38,12 @@ class LoveWebsite {
         }
     }
 
-    // 登录功能
-    showLogin() {
-        const loginModal = document.getElementById('loginModal');
+    // 显示主应用
+    showApp() {
         const mainApp = document.getElementById('mainApp');
-
-        if (this.isLoggedIn) {
-            loginModal.style.display = 'none';
-            mainApp.classList.remove('hidden');
-            this.updateDashboard();
-        } else {
-            loginModal.style.display = 'flex';
-            mainApp.classList.add('hidden');
-        }
-    }
-
-    login(password) {
-        const correctPassword = localStorage.getItem('lovePassword') || 'love2024';
-        if (password === correctPassword) {
-            this.isLoggedIn = true;
-            this.showLogin();
-            this.showNotification('欢迎来到我们的爱情小屋！', 'success');
-        } else {
-            this.showNotification('密码错误，请重试', 'error');
-        }
-    }
-
-    logout() {
-        this.isLoggedIn = false;
-        this.showLogin();
+        mainApp.classList.remove('hidden');
+        this.updateDashboard();
+        this.showNotification('欢迎来到我们的爱情小屋！', 'success');
     }
 
     // 初始化恋爱日期
@@ -92,17 +70,6 @@ class LoveWebsite {
 
     // 事件绑定
     bindEvents() {
-        // 登录表单
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const password = document.getElementById('passwordInput').value;
-            this.login(password);
-        });
-
-        // 登出按钮
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            this.logout();
-        });
 
         // 导航按钮
         document.querySelectorAll('.nav-item').forEach(item => {
