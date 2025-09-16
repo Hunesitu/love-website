@@ -11,8 +11,8 @@ class LoveWebsite {
             todos: [],
             messages: [],
             settings: {
-                names: { person1: '小甜心', person2: '小宝贝' },
-                loveStartDate: '2024-01-01'
+                names: { person1: '包胡呢斯图', person2: '张萨出拉' },
+                loveStartDate: '2023-09-09'
             }
         };
         this.init();
