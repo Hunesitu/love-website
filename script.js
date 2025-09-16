@@ -4,7 +4,9 @@ class LoveWebsite {
         this.currentSection = 'dashboard';
         this.loveStartDate = null;
         this.isLoggedIn = false;
+        this.version = '2.0'; // 版本号，用于清理旧缓存
         this.data = {
+            version: this.version,
             diaries: [],
             memorials: [],
             photos: [],
@@ -35,6 +37,16 @@ class LoveWebsite {
         const savedData = localStorage.getItem('loveWebsiteData');
         if (savedData) {
             const parsedData = JSON.parse(savedData);
+
+            // 版本检查，如果版本不匹配则清理旧数据
+            if (!parsedData.version || parsedData.version !== this.version) {
+                console.log('检测到旧版本数据，正在清理...');
+                localStorage.removeItem('loveWebsiteData');
+                // 使用默认数据并保存
+                this.saveData();
+                return;
+            }
+
             // 确保使用新的默认设置，特别是相恋日期
             this.data = {
                 ...this.data,
@@ -45,9 +57,11 @@ class LoveWebsite {
                 }
             };
         }
-        // 强制更新为新的相恋日期
+        // 强制更新为新的相恋日期和名字（防止旧数据干扰）
+        this.data.version = this.version;
         this.data.settings.loveStartDate = '2023-09-09';
         this.data.settings.names = { person1: '包胡呢斯图', person2: '张萨出拉' };
+        this.saveData(); // 保存更新后的数据
     }
 
     // 显示主应用
