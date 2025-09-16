@@ -34,8 +34,20 @@ class LoveWebsite {
     loadData() {
         const savedData = localStorage.getItem('loveWebsiteData');
         if (savedData) {
-            this.data = { ...this.data, ...JSON.parse(savedData) };
+            const parsedData = JSON.parse(savedData);
+            // 确保使用新的默认设置，特别是相恋日期
+            this.data = {
+                ...this.data,
+                ...parsedData,
+                settings: {
+                    ...this.data.settings,
+                    ...parsedData.settings
+                }
+            };
         }
+        // 强制更新为新的相恋日期
+        this.data.settings.loveStartDate = '2023-09-09';
+        this.data.settings.names = { person1: '包胡呢斯图', person2: '张萨出拉' };
     }
 
     // 显示主应用
