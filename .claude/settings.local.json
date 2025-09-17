@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(mkdir -p server/config server/controllers server/middleware server/models server/routes server/utils uploads)",
+      "Bash(npm install)",
+      "Bash(npm cache clean:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(curl:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

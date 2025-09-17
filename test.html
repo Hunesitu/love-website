@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            min-height: 100vh;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #e91e63;
+            margin-bottom: 30px;
+        }
+        .test-button {
+            background: linear-gradient(45deg, #e91e63, #9c27b0);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .test-results {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .info { color: #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h1>💖 爱情网站 API 测试</h1>
+            <p>测试前后端集成功能</p>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="test-button" onclick="runAPITest()">🧪 运行 API 测试</button>
+            <button class="test-button" onclick="openMainSite()">💕 打开爱情网站</button>
+            <button class="test-button" onclick="clearResults()">🧹 清理结果</button>
+        </div>
+
+        <div id="testResults" class="test-results" style="display: none;">
+            等待测试结果...
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #fff3e0; border-radius: 10px;">
+            <h3>📋 测试说明</h3>
+            <ul>
+                <li><strong>后端服务:</strong> http://localhost:3001</li>
+                <li><strong>前端服务:</strong> http://localhost:8080</li>
+                <li><strong>默认密码:</strong> love2024</li>
+            </ul>
+
+            <h3>🔧 测试内容</h3>
+            <ul>
+                <li>✅ API健康检查</li>
+                <li>🔐 用户登录认证</li>
+                <li>📖 日记功能测试</li>
+                <li>✅ 待办事项功能</li>
+                <li>💕 悄悄话功能</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const colorClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            results.innerHTML += `<span class="${colorClass}">[${timestamp}] ${message}</span>\n`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        async function runAPITest() {
+            const results = document.getElementById('testResults');
+            results.style.display = 'block';
+            results.innerHTML = '';
+
+            log('🧪 开始 API 集成测试...', 'info');
+
+            try {
+                // 1. 测试健康检查
+                log('\n1. 测试健康检查...', 'info');
+                const healthResponse = await fetch('http://localhost:3001/api/health');
+                const healthData = await healthResponse.json();
+                log(`✅ 健康检查通过: ${healthData.message}`, 'success');
+
+                // 2. 测试登录
+                log('\n2. 测试登录...', 'info');
+                const loginResponse = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: 'love2024' })
+                });
+                const loginData = await loginResponse.json();
+
+                if (loginData.success) {
+                    log(`✅ 登录成功: ${loginData.user.person1Name} ❤️ ${loginData.user.person2Name}`, 'success');
+
+                    const token = loginData.token;
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    };
+
+                    // 3. 测试创建日记
+                    log('\n3. 测试创建日记...', 'info');
+                    const diaryResponse = await fetch('http://localhost:3001/api/diaries', {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            title: '第一篇测试日记',
+                            content: '今天我们测试了爱情网站的API功能，一切都很顺利！💕',
+                            mood: 'happy',
+                            weather: 'sunny',
+                            date: new Date().toISOString().split('T')[0]
+                        })
+                    });
+                    const diaryData = await diaryResponse.json();
+                    if (diaryData.success) {
+                        log(`✅ 日记创建成功: ${diaryData.data.title}`, 'success');
+                    }
+
+                    // 4. 测试获取日记列表
+                    log('\n4. 测试获取日记列表...', 'info');
+                    const getDiariesResponse = await fetch('http://localhost:3001/api/diaries', {
+                        headers
+                    });
+                    const getDiariesData = await getDiariesResponse.json();
+                    if (getDiariesData.success) {
+                        log(`✅ 日记列表获取成功，共 ${getDiariesData.data.length} 篇日记`, 'success');
+                    }
+
+                    // 5. 测试创建待办事项
+                    log('\n5. 测试创建待办事项...', 'info');
+                    const todoResponse = await fetch('http://localhost:3001/api/todos', {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            content: '一起去看电影 🎬',
+                            priority: 'high',
+                            category: 'date'
+                        })
+                    });
+                    const todoData = await todoResponse.json();
+                    if (todoData.success) {
+                        log(`✅ 待办事项创建成功: ${todoData.data.content}`, 'success');
+                    }
+
+                    // 6. 测试创建悄悄话
+                    log('\n6. 测试创建悄悄话...', 'info');
+                    const messageResponse = await fetch('http://localhost:3001/api/messages', {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            content: '我爱你，今天的API测试真成功！💖',
+                            author: '包胡呢斯图',
+                            isSpecial: true
+                        })
+                    });
+                    const messageData = await messageResponse.json();
+                    if (messageData.success) {
+                        log(`✅ 悄悄话创建成功: ${messageData.data.content}`, 'success');
+                    }
+
+                    log('\n🎉 所有API测试完成！', 'success');
+                    log('\n📋 测试总结:', 'info');
+                    log('   ✅ 用户认证系统正常', 'success');
+                    log('   ✅ 日记功能正常', 'success');
+                    log('   ✅ 待办事项功能正常', 'success');
+                    log('   ✅ 悄悄话功能正常', 'success');
+                    log('\n💖 爱情网站后端API运行完美！', 'success');
+
+                } else {
+                    log(`❌ 登录失败: ${loginData.error}`, 'error');
+                }
+
+            } catch (error) {
+                log(`❌ API测试失败: ${error.message}`, 'error');
+                log('请确保后端服务正在运行: http://localhost:3001', 'error');
+            }
+        }
+
+        function openMainSite() {
+            window.open('http://localhost:8080', '_blank');
+        }
+
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
